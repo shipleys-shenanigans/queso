@@ -1,0 +1,10 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: .
+    working_dir: /app/backend
+    ports:
+      - "3000:3000"
+    command: "rails s -b 0.0.0.0 -p 3000"
+    
