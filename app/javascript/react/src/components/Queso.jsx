@@ -1,10 +1,7 @@
 import * as React from 'react'                          
 import * as ReactDOM from 'react-dom'      
 import Editor from "react-simple-code-editor";
-import { highlight, languages } from "prismjs/components/prism-core";
-import "prismjs/components/prism-clike";
-import "prismjs/components/prism-ruby";
-import "prismjs/themes/prism.css"; //Example style, you can use another
+import NoteEditor from "./NoteEditor"
 
 class Queso extends React.Component {
   constructor() {
@@ -18,8 +15,10 @@ class Queso extends React.Component {
 
   render () {
     return (
-      <div>
-        Hello World
+      <div id="overall_container">
+        <div id="header">header</div>
+        <NoteEditor></NoteEditor>
+        <div id="footer">footer</div>
       </div>
     );
   }
