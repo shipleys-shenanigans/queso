@@ -34,7 +34,8 @@ export default function SaveDialog(props) {
         onClick={handleClickOpen}
         disabled={!props.dirtyContent}
         style={{
-          backgroundColor: props.dirtyContent ? 'red' : 'green',
+          backgroundColor: props.dirtyContent ? 'red' : '#646F4B',
+          marginRight: '5px',
         }}
       >
         Save

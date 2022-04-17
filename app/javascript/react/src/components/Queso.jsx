@@ -6,9 +6,9 @@ class Queso extends React.Component {
   render () {
     return (
       <div id="overall_container">
-        <div id="header">header</div>
+        <div id="header"></div>
         <NoteEditor></NoteEditor>
-        <div id="footer">footer</div>
+        <div id="footer"></div>
       </div>
     );
   }

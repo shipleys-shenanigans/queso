@@ -1,19 +1,9 @@
 import * as React from 'react'                          
 import * as ReactDOM from 'react-dom'      
 import Editor from "react-simple-code-editor";
-import { highlight, languages } from "prismjs/components/prism-core";
-import "prismjs/components/prism-clike";
 import LoadDialog from "./LoadDialog"
 import SaveDialog from "./SaveDialog"
 import NewNoteButton from "./NewNoteButton"
-
-// import "prismjs/components/prism-markdown";
-
-import "prismjs/components/prism-ruby";
-import "prismjs/themes/prism.css"; //Example style, you can use another
-import * as PrismComponents from 'prismjs/components';
-console.log(PrismComponents)
-// loadComponents(['markdown']);
 
 class NoteEditor extends React.Component {
   constructor() {
@@ -34,9 +24,8 @@ class NoteEditor extends React.Component {
 
   }
 
-  hightlightWithLineNumbers = (input, language) =>
-    highlight(input, language)
-      .split("\n")
+  hightlightWithLineNumbers = (input) =>
+      input.split("\n")
       .map((line, i) => `<span class='editorLineNumber'>${i + 1}</span>${line}`)
       .join("\n");
 
@@ -145,14 +134,14 @@ class NoteEditor extends React.Component {
             <Editor
                 value={this.state.content}
                 onValueChange={this.handleContentChange}
-                highlight={(code) => this.hightlightWithLineNumbers(code, languages.ruby)}
+                highlight={(code) => this.hightlightWithLineNumbers(code)}
                 padding={10}
                 textareaId="codeArea"
                 className="editor"
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
-                  fontSize: 18,
-                  outline: 0
+                  fontSize: 15,
+                  outline: 0,
                 }}            
             />  
           </div>
@@ -165,7 +154,7 @@ class NoteEditor extends React.Component {
                 tempfilename={this.state.tempfilename}
                 wasSaved={this.state.wasSaved}
                 dirtyContent={this.state.content !== this.state.lastSavedContent}
-              ></SaveDialog>;
+              ></SaveDialog>
               <LoadDialog
                 loadAllNotes={this.loadAllNotes}
                 allNotes={this.state.notes}
