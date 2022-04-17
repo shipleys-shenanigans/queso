@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get 'queso/save'
+  get 'queso/save_with_timestamp'
   get 'queso/all_notes'
   get 'queso/all_notes_with_timestamp'
   get 'queso/load'

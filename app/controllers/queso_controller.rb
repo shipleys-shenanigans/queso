@@ -110,7 +110,39 @@ class QuesoController < ApplicationController
 
       # then update our mapping file
       from_file = JSON.parse(File.read(DIRECTORY + "/" + SPECIAL_MAPPING_FILE))
-      from_file[filename] = Time.now
+      from_file[filename] = Time.now.utc
+      File.open(DIRECTORY + "/" + SPECIAL_MAPPING_FILE, 'w') do |file| 
+        file.write(from_file.to_json) 
+      end
+
+      some_text = {
+        success: true,
+      }
+      render :json => some_text
+    rescue Exception => ex
+      some_text = {
+        success: false,
+      }
+      render :json => some_text
+    end
+  end
+
+  def save_with_timestamp
+    first_call_check
+
+    content = params[:content]
+    filename = params[:filename]
+    timestamp = params[:timestamp]
+
+    begin
+      # first write the actual file
+      File.open(DIRECTORY + "/" + filename, 'w') { 
+        |file| file.write(content) 
+      }
+
+      # then update our mapping file
+      from_file = JSON.parse(File.read(DIRECTORY + "/" + SPECIAL_MAPPING_FILE))
+      from_file[filename] = timestamp
       File.open(DIRECTORY + "/" + SPECIAL_MAPPING_FILE, 'w') do |file| 
         file.write(from_file.to_json) 
       end
