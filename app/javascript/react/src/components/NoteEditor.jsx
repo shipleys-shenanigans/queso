@@ -5,6 +5,7 @@ import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-clike";
 import LoadDialog from "./LoadDialog"
 import SaveDialog from "./SaveDialog"
+import NewNoteButton from "./NewNoteButton"
 
 // import "prismjs/components/prism-markdown";
 
@@ -118,6 +119,18 @@ class NoteEditor extends React.Component {
         lastSavedContent: response.content }));
   }
 
+  handleClickNewNote = () => {
+    this.setState({
+      content: "",
+      filename: "unsaved.txt*",
+      wasSaved: false,
+      tempfilename: "",
+      notes: [],
+      tempSelectedFilename: "",
+      lastSavedContent: "",
+    });
+  }
+
   render () {
     return (
       <div id="note_editor">
@@ -160,6 +173,9 @@ class NoteEditor extends React.Component {
                 stateHandleClickCancelLoad={this.stateHandleClickCancelLoad}
                 stateHandleClickLoadOpen={this.stateHandleClickLoadOpen}
               ></LoadDialog>
+              <NewNoteButton
+                handleClickNewNote={this.handleClickNewNote}
+              ></NewNoteButton>
             </div>
             <div id="note_editor_center_bottom_right">
               {this.state.filename}
