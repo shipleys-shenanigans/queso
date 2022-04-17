@@ -101,6 +101,7 @@ class QuesoController < ApplicationController
 
     content = params[:content]
     filename = params[:filename]
+    timestamp = Time.now.utc
 
     begin
       # first write the actual file
@@ -110,10 +111,12 @@ class QuesoController < ApplicationController
 
       # then update our mapping file
       from_file = JSON.parse(File.read(DIRECTORY + "/" + SPECIAL_MAPPING_FILE))
-      from_file[filename] = Time.now.utc
+      from_file[filename] = timestamp
       File.open(DIRECTORY + "/" + SPECIAL_MAPPING_FILE, 'w') do |file| 
         file.write(from_file.to_json) 
       end
+
+      update_file_sot(filename, content, timestamp)
 
       some_text = {
         success: true,
@@ -126,6 +129,22 @@ class QuesoController < ApplicationController
       render :json => some_text
     end
   end
+
+  def update_file_sot(filename, content, timestamp)
+    url = URI.parse("https://159.223.158.187:3000/queso/save_with_timestamp?filename=#{ERB::Util.url_encode(filename)}&content=#{ERB::Util.url_encode(content)}&timestamp=#{ERB::Util.url_encode(timestamp)}")
+      req = Net::HTTP::Get.new(url.to_s)
+      res = Net::HTTP.start(url.host, url.port) {|http|
+        http.request(req)
+      }
+      response_body = JSON.parse(res.body) 
+
+      if response_body['success']
+        return response_body['content']
+      end
+
+      return ''
+  end
+
 
   def save_with_timestamp
     first_call_check
