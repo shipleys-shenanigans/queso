@@ -35,7 +35,6 @@
   flex: 16;
   display: flex;
   height: 100%;
-  overflow: scroll !important;
 }
 
 #note_editor_left {
@@ -47,7 +46,6 @@
   background-color: white;
   flex: 16;
   height: 100%;
-  overflow: scroll !important;
   display: flex;
   flex-direction: column;
 }
