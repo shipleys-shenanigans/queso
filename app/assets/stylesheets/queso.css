@@ -45,9 +45,11 @@
 
 #note_editor_center {
   background-color: white;
-  flex: 5;
+  flex: 8;
   height: 100%;
   overflow: scroll !important;
+  display: flex;
+  flex-direction: column;
 }
 
 #note_editor_right {
@@ -61,6 +63,35 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+#note_editor_center_top {
+  background-color: black;
+  flex: 1;
+}
+
+#note_editor_center_center {
+  background-color: white;
+  flex: 8;
+  height: 100%;
+  overflow: scroll !important;
+}
+
+#note_editor_center_bottom {
+  background-color: black;
+  flex: 1;
+  padding-top: 20px;
+  display: flex;
+}
+
+#note_editor_center_bottom_left {
+  flex: 1;
+}
+
+#note_editor_center_bottom_right {
+  flex: 1;
+  color: white;
+  text-align: right;
 }
 
 .editor {
