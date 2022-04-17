@@ -42,6 +42,7 @@ class NoteSync
     my_notes_to_delete.each { |n| delete_note_from_local n }
     my_notes_to_add.each { |n, timestamp| add_or_update_note_local(n, timestamp) }
     my_notes_to_update.each { |n, timestamp| add_or_update_note_local(n, timestamp) }
+    sot_notes_to_update.each { |n, timestamp| update_file_sot(n, timestamp) }
   end
 
   def get_file_contents_from_url(filename, url)
