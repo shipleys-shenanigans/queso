@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom'
 import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-clike";
+import LoadDialog from "./LoadDialog"
 import SaveDialog from "./SaveDialog"
 
 // import "prismjs/components/prism-markdown";
@@ -22,6 +23,9 @@ class NoteEditor extends React.Component {
       filename: "unsaved.txt*",
       wasSaved: false,
       tempfilename: "",
+      notes: [],
+      tempSelectedFilename: "",
+      lastSavedContent: "",
     }
   }
 
@@ -52,7 +56,8 @@ class NoteEditor extends React.Component {
     this.setState({
       filename: filename, 
       tempfilename: "", 
-      wasSaved: true
+      wasSaved: true,
+      lastSavedContent: this.state.content,
     });
     this.saveTextToFile(filename, this.state.content);
   }
@@ -66,6 +71,51 @@ class NoteEditor extends React.Component {
         }
         throw new Error("Network response was not ok.");
       });
+  }
+
+  loadAllNotes = () => {
+    const url = "/queso/all_notes"
+    fetch(url)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("Network response was not ok.");
+      })
+      .then(response => this.setState({ notes: response.notes }))
+  }
+
+  handleUpdateTempSelectedFilename = (filename) => {
+    this.setState({tempSelectedFilename: filename});
+  }
+
+  stateHandleClickCancelLoad = () => {
+    this.setState({tempSelectedFilename: ""});
+  }
+
+  stateHandleClickLoadOpen = () => {
+    let filename = this.state.tempSelectedFilename;
+    this.setState({
+      filename: filename, 
+      tempSelectedFilename: "", 
+      wasSaved: true,
+    });
+
+    this.loadContentForFilename(filename);
+  }
+
+  loadContentForFilename = (filename) => {
+    const url = "/queso/load?filename=" + encodeURIComponent(filename);
+    fetch(url)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("Network response was not ok.");
+      })
+      .then(response => this.setState({ 
+        content: response.content, 
+        lastSavedContent: response.content }));
   }
 
   render () {
@@ -101,7 +151,15 @@ class NoteEditor extends React.Component {
                 tempfilenameUpdate={this.tempfilenameUpdate}
                 tempfilename={this.state.tempfilename}
                 wasSaved={this.state.wasSaved}
+                dirtyContent={this.state.content !== this.state.lastSavedContent}
               ></SaveDialog>;
+              <LoadDialog
+                loadAllNotes={this.loadAllNotes}
+                allNotes={this.state.notes}
+                handleUpdateTempSelectedFilename={this.handleUpdateTempSelectedFilename}
+                stateHandleClickCancelLoad={this.stateHandleClickCancelLoad}
+                stateHandleClickLoadOpen={this.stateHandleClickLoadOpen}
+              ></LoadDialog>
             </div>
             <div id="note_editor_center_bottom_right">
               {this.state.filename}

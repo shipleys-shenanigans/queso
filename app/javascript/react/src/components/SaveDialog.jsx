@@ -9,9 +9,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export default function SaveDialog(props) {
   const [open, setOpen] = React.useState(false);
-
-  state = { textFieldValue: "" };
-
   const handleClickOpen = () => {
     if (props.wasSaved) {
       props.stateHandleClickSave()
@@ -32,7 +29,14 @@ export default function SaveDialog(props) {
 
   return (
     <div>
-      <Button variant="contained" onClick={handleClickOpen}>
+      <Button 
+        variant="contained" 
+        onClick={handleClickOpen}
+        disabled={!props.dirtyContent}
+        style={{
+          backgroundColor: props.dirtyContent ? 'red' : 'green',
+        }}
+      >
         Save
       </Button>
       <Dialog open={open} onClose={handleCancel}>

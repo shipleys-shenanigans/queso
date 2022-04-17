@@ -86,6 +86,7 @@
 
 #note_editor_center_bottom_left {
   flex: 1;
+  display: flex;
 }
 
 #note_editor_center_bottom_right {
