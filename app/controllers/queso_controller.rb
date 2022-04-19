@@ -116,7 +116,7 @@ class QuesoController < ApplicationController
         file.write(from_file.to_json) 
       end
 
-      update_file_sot(filename, content, timestamp)
+      update_file_sot(filename, content, timestamp) unless config.is_sot
 
       some_text = {
         success: true,
@@ -151,7 +151,7 @@ class QuesoController < ApplicationController
 
     content = params[:content]
     filename = params[:filename]
-    timestamp = params[:timestamp]
+    timestamp = Time.zone.parse(params[:timestamp]).utc
 
     begin
       # first write the actual file
