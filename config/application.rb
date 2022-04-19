@@ -15,7 +15,7 @@ module YourProject
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
-    config.is_sot = true
+    config.is_sot = false
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -31,7 +31,7 @@ module YourProject
     unless config.is_sot
       scheduler = Rufus::Scheduler.new
       scheduler.every '10s' do
-        sot_notes = self.get_notes_from_url "https://159.223.158.187:3000"
+        sot_notes = self.get_notes_from_url "http://192.168.4.56:3000"
         my_notes = self.get_notes_from_url "http://localhost:3000"
         NoteSync.new.sync(my_notes, sot_notes)
       end
