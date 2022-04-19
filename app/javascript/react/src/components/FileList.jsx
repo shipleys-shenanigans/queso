@@ -12,18 +12,18 @@ export default function FileList(props) {
     event,
     index
   ) => {
-    props.handleUpdateTempSelectedFilename(props.allNotes[index]);
+    props.handleUpdateTempSelectedFilename(props.allNotes[index][0]);
     setSelectedIndex(index);
   };
 
   const notesToDivs = () => {
     return props.allNotes.map((n,i) =>
-     (<ListItem disablePadding key={n}>
+     (<ListItem disablePadding key={n[1]}>
         <ListItemButton
           selected={selectedIndex === i}
           onClick={(event) => handleListItemClick(event, i)}
         >        
-        <ListItemText primary={n} />
+        <ListItemText primary={n[1]} />
       </ListItemButton>
     </ListItem>));
   }
