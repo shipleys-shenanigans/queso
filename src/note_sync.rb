@@ -63,7 +63,7 @@ class NoteSync
   def update_file_sot(filename, timestamp)
     content = get_file_contents_from_url(filename, "http://localhost:3000")
 
-    url = URI.parse("https://159.223.158.187:3000/queso/save_with_timestamp?filename=#{ERB::Util.url_encode(filename)}&content=#{ERB::Util.url_encode(content)}&timestamp=#{ERB::Util.url_encode(timestamp)}")
+    url = URI.parse("http://192.168.4.56:3000/queso/save_with_timestamp?filename=#{ERB::Util.url_encode(filename)}&content=#{ERB::Util.url_encode(content)}&timestamp=#{ERB::Util.url_encode(timestamp)}")
       req = Net::HTTP::Get.new(url.to_s)
       res = Net::HTTP.start(url.host, url.port) {|http|
         http.request(req)
@@ -82,7 +82,7 @@ class NoteSync
     puts filename
     puts timestamp
 
-    content = get_file_contents_from_url(filename, "https://159.223.158.187:3000")
+    content = get_file_contents_from_url(filename, "http://192.168.4.56:3000")
 
     begin
       File.open(DIRECTORY + "/" + filename, 'w') { 

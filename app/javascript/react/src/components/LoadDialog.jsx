@@ -35,8 +35,8 @@ export default function LoadDialog(props) {
     setNotesFilter(event.target.value);
   };
 
-  const prettify_name = (note_name) => {
-    note_name = note_name.substring(0, note_name.lastIndexOf('.'));
+  const prettify_name = (note_name_raw) => {
+    let note_name = note_name_raw.substring(0, note_name_raw.lastIndexOf('.'));
     let note_name_splitted = note_name.split('_');
     let note_lable = '';
     switch (note_name_splitted[0]) {
@@ -80,7 +80,7 @@ export default function LoadDialog(props) {
       prettified_filename = `${front_slice} ${date_slice} ${back_slice}`;
     }
 
-    return `[${note_lable}] ${prettified_filename}`;
+    return [note_name_raw, `[${note_lable}] ${prettified_filename}`];
   }
   
   return (
