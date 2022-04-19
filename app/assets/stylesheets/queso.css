@@ -79,6 +79,12 @@
   border-width: 1px;
   border-style:dashed;
   padding: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#note_editor_center_center::-webkit-scrollbar {
+  display: none;
 }
 
 #note_editor_center_bottom {
