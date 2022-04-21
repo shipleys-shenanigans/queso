@@ -56,6 +56,14 @@ export default function LoadDialog(props) {
         note_lable = "Meeting"
         break;
 
+      case "RESEARCH":
+        note_lable = "Research"
+        break;
+
+      case "CODE":
+        note_lable = "Code"
+        break;
+
       default:
         note_lable = "Unknown"
         break;
