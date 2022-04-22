@@ -1,10 +1,25 @@
 version: '3'
 services:
-  frontend:
+  queso:
     build:
+      dockerfile: Dockerfile
       context: .
     working_dir: /app/backend
     ports:
       - "3000:3000"
     command: "rails s -b 0.0.0.0 -p 3000"
-    
+#    environment:
+#      - DATABASE_URL=postgis://pguser:pguser@postgres:5432
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local

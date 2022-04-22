@@ -71,7 +71,7 @@ export default function LoadDialog(props) {
 
     let prettified_filename_array = note_name_splitted.slice(1);
     let date_beginning = -1;
-    for (let i = prettified_filename_array.length - 1; i - 2 > -1; i++) {
+    for (let i = prettified_filename_array.length - 1; i - 2 > -1; i--) {
       if (!isNaN(prettified_filename_array[i]) &&
         !isNaN(prettified_filename_array[i-1]) &&
         !isNaN(prettified_filename_array[i-2])) {

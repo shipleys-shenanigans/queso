@@ -121,6 +121,7 @@ class NoteEditor extends React.Component {
   }
 
   render () {
+    console.log(this.state.notes);
     return (
       <div id="note_editor">
         <div id="note_editor_left">
