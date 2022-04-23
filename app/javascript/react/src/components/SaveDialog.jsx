@@ -9,22 +9,27 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export default function SaveDialog(props) {
   const [open, setOpen] = React.useState(false);
+  const [filename, setFilename] = React.useState('');
+
   const handleClickOpen = () => {
     if (props.wasSaved) {
-      props.stateHandleClickSave()
+      props.stateHandleClickSave(props.initFilename)
     } else {
       setOpen(true);
     }
   };
 
-  const handleCancel = () => {
-    props.stateHandleClickCancel();
+  const handleChange = (e) => {
+      setFilename(e.target.value);
+  }
+
+  const handleClose = () => {
     setOpen(false);
   };
 
   const handleClickSave = () => {
-    props.stateHandleClickSave()
-    setOpen(false);
+    props.stateHandleClickSave(filename)
+      handleClose();
   }
 
   return (
@@ -40,7 +45,7 @@ export default function SaveDialog(props) {
       >
         Save
       </Button>
-      <Dialog open={open} onClose={handleCancel}>
+      <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Save File</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -50,16 +55,16 @@ export default function SaveDialog(props) {
             autoFocus
             margin="dense"
             id="name"
-            label="Email Address"
-            type="email"
+            label="Filename"
+            type="filename"
             fullWidth
-            value={props.tempfilename} 
-            onChange={props.tempfilenameUpdate}
+            value={filename}
+            onChange={handleChange}
             variant="standard"
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel}>Cancel</Button>
+          <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleClickSave}>Save</Button>
         </DialogActions>
       </Dialog>

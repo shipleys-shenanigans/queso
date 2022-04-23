@@ -1,182 +1,157 @@
-import * as React from 'react'                          
-import * as ReactDOM from 'react-dom'      
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import Editor from "react-simple-code-editor";
 import LoadDialog from "./LoadDialog"
 import SaveDialog from "./SaveDialog"
 import NewNoteButton from "./NewNoteButton"
 
 class NoteEditor extends React.Component {
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    this.state = {
-      content: "",
-      filename: "unsaved.txt*",
-      wasSaved: false,
-      tempfilename: "",
-      notes: [],
-      tempSelectedFilename: "",
-      lastSavedContent: "",
+        this.state = {
+            currentNote: { filename: "unsaved.txt*", content: "" },
+            wasSaved: false,
+            notes: [],
+            lastSavedContent: "",
+        }
     }
-  }
 
-  componentDidMount() { 
+    hightlightWithLineNumbers = (input) =>
+        input.split("\n")
+            .map((line, i) => `<span class='editorLineNumber'>${i + 1}</span>${line}`)
+            .join("\n");
 
-  }
 
-  hightlightWithLineNumbers = (input) =>
-      input.split("\n")
-      .map((line, i) => `<span class='editorLineNumber'>${i + 1}</span>${line}`)
-      .join("\n");
+    stateHandleClickSave = (filename) => {
+        this.setState({
+            currentNote: {
+                filename: filename,
+                content: this.state.currentNote.content,
+            },
+            wasSaved: true,
+            lastSavedContent: this.state.currentNote.content,
+        });
+        this.saveTextToFile(filename, this.state.currentNote.content);
+    }
 
-  stateHandleClickCancel = () => {
-    this.setState({tempfilename: ""});
-  }
+    saveTextToFile = (filename, content) => {
+        const url = "/queso/save?filename=" + encodeURIComponent(filename) +  "&content=" +  encodeURIComponent(content);
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Network response was not ok.");
+            });
+    }
 
-  handleContentChange = (e) => {
-    this.setState({content: e});
-  }
+    loadAllNotes = () => {
+        const url = "/queso/all_note_names"
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Network response was not ok.");
+            })
+            .then(response => this.setState({ notes: response.notes }))
+    }
 
-  tempfilenameUpdate = (e) => {
-    this.setState({tempfilename: e.target.value});
-  }
-  
-  stateHandleClickSave = () => {
-    let filename = this.state.wasSaved ? this.state.filename : this.state.tempfilename;
-    this.setState({
-      filename: filename, 
-      tempfilename: "", 
-      wasSaved: true,
-      lastSavedContent: this.state.content,
-    });
-    this.saveTextToFile(filename, this.state.content);
-  }
+    loadSelectedNote = (id) => {
+        const url = "/queso/note?id=" + encodeURIComponent(id);
+        return fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Network response was not ok.");
+            })
+    }
 
-  saveTextToFile = (filename, content) => {
-    const url = "/queso/save?filename=" + encodeURIComponent(filename) +  "&content=" +  encodeURIComponent(content);
-    fetch(url)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok.");
-      });
-  }
+    stateHandleClickLoadOpen = async (id) => {
+        let note = (await this.loadSelectedNote(id)).note[0];
+        this.setState({
+            currentNote: {
+                filename: note.filename,
+                content: note.content,
+            },
+            lastSavedContent: note.content,
+            wasSaved: true,
+        });
+    }
 
-  loadAllNotes = () => {
-    const url = "/queso/all_notes"
-    fetch(url)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok.");
-      })
-      .then(response => this.setState({ notes: response.notes }))
-  }
+    handleClickNewNote = () => {
+        this.setState({
+            currentNote: { filename: "unsaved.txt*", content: "" },
+            wasSaved: false,
+            notes: [],
+            lastSavedContent: "",
+        });
+    }
 
-  handleUpdateTempSelectedFilename = (filename) => {
-    this.setState({tempSelectedFilename: filename});
-  }
+    handleContentChange = (e) => {
+        let tempNote = this.state.currentNote;
+        console.log(tempNote);
+        tempNote.content = e;
+        this.setState({currentNote: tempNote})
+    }
 
-  stateHandleClickCancelLoad = () => {
-    this.setState({tempSelectedFilename: ""});
-  }
+    render () {
+        console.log(this.state.notes);
+        return (
+            <div id="note_editor">
+                <div id="note_editor_left">
 
-  stateHandleClickLoadOpen = () => {
-    let filename = this.state.tempSelectedFilename;
-    this.setState({
-      filename: filename, 
-      tempSelectedFilename: "", 
-      wasSaved: true,
-    });
+                </div>
+                <div id="note_editor_center">
+                    <div id="note_editor_center_top">
 
-    this.loadContentForFilename(filename);
-  }
-
-  loadContentForFilename = (filename) => {
-    const url = "/queso/load?filename=" + encodeURIComponent(filename);
-    fetch(url)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok.");
-      })
-      .then(response => this.setState({ 
-        content: response.content, 
-        lastSavedContent: response.content }));
-  }
-
-  handleClickNewNote = () => {
-    this.setState({
-      content: "",
-      filename: "unsaved.txt*",
-      wasSaved: false,
-      tempfilename: "",
-      notes: [],
-      tempSelectedFilename: "",
-      lastSavedContent: "",
-    });
-  }
-
-  render () {
-    console.log(this.state.notes);
-    return (
-      <div id="note_editor">
-        <div id="note_editor_left">
-        
-        </div>
-        <div id="note_editor_center">
-          <div id="note_editor_center_top">
-
-          </div>
-          <div id="note_editor_center_center">
-            <Editor
-                value={this.state.content}
-                onValueChange={this.handleContentChange}
-                highlight={(code) => this.hightlightWithLineNumbers(code)}
-                padding={10}
-                textareaId="codeArea"
-                className="editor"
-                style={{
-                  fontFamily: '"Fira code", "Fira Mono", monospace',
-                  fontSize: 15,
-                  outline: 0,
-                }}            
-            />  
-          </div>
-          <div id="note_editor_center_bottom">
-            <div id="note_editor_center_bottom_left">
-              <SaveDialog 
-                stateHandleClickCancel={this.stateHandleClickCancel}
-                stateHandleClickSave={this.stateHandleClickSave}
-                tempfilenameUpdate={this.tempfilenameUpdate}
-                tempfilename={this.state.tempfilename}
-                wasSaved={this.state.wasSaved}
-                dirtyContent={this.state.content !== this.state.lastSavedContent}
-              ></SaveDialog>
-              <LoadDialog
-                loadAllNotes={this.loadAllNotes}
-                allNotes={this.state.notes}
-                handleUpdateTempSelectedFilename={this.handleUpdateTempSelectedFilename}
-                stateHandleClickCancelLoad={this.stateHandleClickCancelLoad}
-                stateHandleClickLoadOpen={this.stateHandleClickLoadOpen}
-              ></LoadDialog>
-              <NewNoteButton
-                handleClickNewNote={this.handleClickNewNote}
-              ></NewNoteButton>
+                    </div>
+                    <div id="note_editor_center_center">
+                        <Editor
+                            value={this.state.currentNote.content}
+                            onValueChange={this.handleContentChange}
+                            highlight={(code) => this.hightlightWithLineNumbers(code)}
+                            padding={10}
+                            textareaId="codeArea"
+                            className="editor"
+                            style={{
+                                fontFamily: '"Fira code", "Fira Mono", monospace',
+                                fontSize: 15,
+                                outline: 0,
+                            }}
+                        />
+                    </div>
+                    <div id="note_editor_center_bottom">
+                        <div id="note_editor_center_bottom_left">
+                            <SaveDialog
+                                initFilename={this.state.currentNote.filename}
+                                stateHandleClickSave={this.stateHandleClickSave}
+                                wasSaved={this.state.wasSaved}
+                                dirtyContent={this.state.currentNote.content !== this.state.lastSavedContent}
+                            ></SaveDialog>
+                            <LoadDialog
+                                loadAllNotes={this.loadAllNotes}
+                                allNotes={this.state.notes}
+                                handleUpdateTempSelectedFilename={this.handleUpdateTempSelectedFilename}
+                                stateHandleClickCancelLoad={this.stateHandleClickCancelLoad}
+                                stateHandleClickLoadOpen={this.stateHandleClickLoadOpen}
+                            ></LoadDialog>
+                            <NewNoteButton
+                                handleClickNewNote={this.handleClickNewNote}
+                            ></NewNoteButton>
+                        </div>
+                        <div id="note_editor_center_bottom_right">
+                            {this.state.currentNote.filename}
+                        </div>
+                    </div>
+                </div>
+                <div id="note_editor_right">
+                </div>
             </div>
-            <div id="note_editor_center_bottom_right">
-              {this.state.filename}
-            </div>
-          </div>
-        </div>
-        <div id="note_editor_right">
-        </div>
-      </div>
-    );
-  }
+        );
+    }
 }
 
 export default NoteEditor
