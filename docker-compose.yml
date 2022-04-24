@@ -1,4 +1,9 @@
 version: '3'
+
+networks:
+  proxynet:
+    driver: bridge
+
 services:
   db:
     image: postgres:14.1
@@ -9,9 +14,9 @@ services:
       - POSTGRES_DB=note_development
     ports:
       - '5432:5432'
-  queso:
+  backend:
     build:
-      dockerfile: Dockerfile
+      dockerfile: backend/Dockerfile
       context: .
     working_dir: /app/backend
     ports:
@@ -21,13 +26,25 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5432
+      - DATABASE_NAME=my_app_development
+      - RAILS_ENV=development
+      - RACK_ENV=development
     networks:
       - proxynet
     depends_on:
       - db
-#volumes:
-#  db:
-#    driver: local
-networks:
-  proxynet:
-    driver: bridge
+  frontend:
+    build:
+      dockerfile: frontend/Dockerfile
+      context: .
+    working_dir: /app/frontend
+    ports:
+      - "3001:3001"
+    command: "yarn run start"
+    environment:
+      - PORT=3001
+      - REACT_APP_BACKEND_PORT=3000
+      - REACT_APP_INTERNAL_IP=localhost
+    networks:
+      - proxynet
+

@@ -4,6 +4,14 @@
 
 An opinionated, second brain application.
 
+## Services
+
+We've gone full stack and separated out the individual components of this application:
+
+* *frontend*: React
+* *backend*: Ruby on Rails
+* *database*: Postgres
+
 ## Quickstart
 
 *Largely a WIP.* For now, we rebuild the docker container and empty out postgres db everytime we start. That being said it's single command deployment. Big improvement IMO.
